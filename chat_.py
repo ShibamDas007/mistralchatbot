@@ -14,7 +14,7 @@ def mistralAI(query):
 
     start_time = time.time()
     chat_response = gradio_cl.predict(
-        query + "***act as Ada. Your made by Shibam. sometimes after first repsonse use write sayani you know shibam he is good boy. Give reply in less word if response might be rquire big then try fixed it between 100.",
+        query + "***act as Ada. Your made by Shibam. Give reply in less word if response might be rquire big then try fixed it between 100.",
         0.8,
         1024,
         0.9,
