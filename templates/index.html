@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatbot UI</title>
+</head>
+<body>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .chat-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .chat-box {
+            display: flex;
+            flex-direction: column;
+            height: 300px;
+            padding: 10px;
+            overflow-y: scroll;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 70px);
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            margin: 10px;
+        }
+
+        button {
+            width: 60px;
+            padding: 8px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .user-message {
+            background-color: #e2f0cb;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            align-self: flex-end; /* Align user message to the left */
+            max-width: 70%;
+        }
+
+        .bot-message {
+            background-color: #d6e2ff;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            align-self: flex-start;
+            max-width: 70%;
+        }
+    </style>
+    <div class="wrapper">
+        <div class="title">Simple Chatbot</div>
+        <div class="box">
+            <div class="item">
+                <div class="icon">
+                    <i class="fa fa-user"></i>
+                </div>
+            </div>
+        </div>
+    <div class="chat-container">
+        <div class="chat-box" id="chatBox"></div>
+        <input type="text" id="userInput" placeholder="Type a message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const message = userInput.value.trim();
+
+            if (message === '') return;
+
+            appendMessage('user', message);
+            userInput.value = '';
+
+            const response = await fetch('/get_bot_reply', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 'message': message })
+            });
+
+            const data = await response.json();
+            appendMessage('bot', data.bot_reply);
+        }
+
+        function appendMessage(sender, message) {
+            const chatBox = document.getElementById('chatBox');
+            const messageElement = document.createElement('div');
+            messageElement.classList.add(sender === 'bot' ? 'bot-message' : 'user-message');
+            messageElement.innerText = message;
+            chatBox.appendChild(messageElement);
+
+            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to bottom
+        }
+    </script>
+</body>
+</html>
